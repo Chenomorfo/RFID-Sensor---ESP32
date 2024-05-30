@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animación de Puerta</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            flex-direction: row;
+            gap: 20px
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            width: 220px;
+            height: 200px;
+        }
+
+        .background {
+            width: 100%;
+            height: 100%;
+            background-color: gray;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            transition: opacity 1s;
+        }
+
+        .background.hidden {
+            opacity: 0;
+        }
+
+        .door {
+            width: 100px;
+            height: 200px;
+            background-color: brown;
+            border: 2px solid #654321;
+            border-radius: 5px;
+            transition: transform 1s, left 1s;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+
+        .doorCont {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .door.open {
+            left: 120px;
+        }
+
+        .light {
+            width: 20px;
+            height: 20px;
+            background-color: green;
+            border-radius: 50%;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: background-color 1s;
+        }
+
+        .door.open~.light {
+            background-color: red;
+        }
+
+        button {
+            margin-top: 240px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="doorCont">
+        <h1 style="height: 36px;" id="caso_operario">Operario</h1>
+        <div class="container">
+            <div class="background" id="background"></div>
+            <div class="door" id="door_op"></div>
+            <div class="light" id="light"></div>
+        </div>
+    </div>
+    <div class="doorCont">
+        <h1 style="height: 36px;" id="caso_supervisor">Supervisor</h1>
+        <div class="container">
+            <div class="background" id="background"></div>
+            <div class="door" id="door_su"></div>
+            <div class="light" id="light"></div>
+        </div>
+    </div>
+    <div class="doorCont">
+        <h1 style="height: 36px;" id="caso_gerente">Gerente</h1>
+        <div class="container">
+            <div class="background" id="background"></div>
+            <div class="door" id="door_ge"></div>
+            <div class="light" id="light"></div>
+        </div>
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const door = document.getElementsByClassName('door');
+        const background = document.getElementsByClassName('background');
+        const socket = io();
+        let isPassed = false;
+
+        for (let i = 0; i < background.length; i++) {
+            background[i].classList.toggle('hidden');
+            door[i].classList.toggle("open")
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const button = document.getElementById('toggleButton');
+            button.addEventListener('click', toggleDoor);
+        });
+
+        socket.on("trusted", (msg) => {
+            /* Pass: true, Auth: 0, UID: null */
+            if (isPassed) return;
+            if (msg.Nivel == 0) return alert("No tiene permitido entrar")
+
+            toggleDoor(msg.Nivel)
+            isPassed = true
+            setTimeout(() => {
+                toggleDoor(msg.Nivel);
+                isPassed = false
+            }, 3000)
+        })
+
+        function toggleDoor(rfid) {
+            if (rfid > 0)
+                door[0].classList.toggle("open")
+            if (rfid > 1)
+                door[1].classList.toggle("open")
+            if (rfid > 2)
+                door[2].classList.toggle("open")
+        }
+    </script>
+</body>
+
+</html>

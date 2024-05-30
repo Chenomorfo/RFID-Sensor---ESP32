@@ -1,0 +1,8 @@
+.hall {
+    display: flex;
+    justify-content: space-between;
+}
+
+body{
+    background-color: #242424;
+}

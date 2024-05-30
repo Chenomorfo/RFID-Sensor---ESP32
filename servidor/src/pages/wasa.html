@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animación de Puerta</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            flex-direction: column;
+            gap: 20px
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            width: 220px;
+            height: 200px;
+        }
+
+        .background {
+            width: 100%;
+            height: 100%;
+            background-color: gray;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            transition: opacity 1s;
+        }
+
+        .background.hidden {
+            opacity: 0;
+        }
+
+        .door {
+            width: 100px;
+            height: 200px;
+            background-color: brown;
+            border: 2px solid #654321;
+            border-radius: 5px;
+            transition: transform 1s, left 1s;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+
+        .door.open {
+            left: 120px;
+        }
+
+        .light {
+            width: 20px;
+            height: 20px;
+            background-color: green;
+            border-radius: 50%;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: background-color 1s;
+        }
+
+        .door.open~.light {
+            background-color: red;
+        }
+
+        button {
+            margin-top: 240px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="height: 36px;" id="rfid">{RFID}</h1>
+    <div class="container">
+        <div class="background" id="background"></div>
+        <div class="door" id="door"></div>
+        <div class="light" id="light"></div>
+        <button id="toggleButton">Abrir/Cerrar Puerta</button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let isPassed = false;
+        const rfidlbl = document.getElementById("rfid")
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleDoor();
+            const button = document.getElementById('toggleButton');
+            button.addEventListener('click', toggleDoor);
+        });
+
+        socket.on("trusted", (msg) => {
+            if (isPassed) return;
+            if (!msg.trusted) return alert("No tiene permitido entrar")
+
+            toggleDoor()
+            isPassed = true
+            rfidlbl.innerText = msg.rfid
+            setTimeout(() => {
+                toggleDoor();
+                rfidlbl.innerText = ""
+                isPassed = false
+            }, 3000)
+        })
+
+        function toggleDoor() {
+            const door = document.getElementById('door');
+            const background = document.getElementById('background');
+            door.classList.toggle('open');
+            background.classList.toggle('hidden');
+        }
+    </script>
+</body>
+
+</html>

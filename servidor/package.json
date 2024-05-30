@@ -1,0 +1,25 @@
+{
+  "name": "esp32-doors",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "ws": "nodemon src/ws-server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-ws": "^5.0.2",
+    "sequelize": "^6.37.3",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "tedious": "^18.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
