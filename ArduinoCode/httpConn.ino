@@ -1,6 +1,5 @@
 
-//String hostURI = "http://192.168.137.1:3000";
-String hostURI = "http://192.168.137.1:3001";
+String hostURI = "APP_URL:APP_PORT";
 
 void GET_HW() {
   HTTPClient http;
