@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 
-export const db = new Sequelize("rfid", "cheno", "cheno", {
+export const db = new Sequelize("rfid", "dbName", "dbPwd", {
     host: "localhost",
     port: 49171,
     dialect: "mssql",
